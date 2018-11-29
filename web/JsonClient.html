@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Weather App</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script language="javascript">
+            var xmlhttp;
+            function init() {
+                xmlhttp = new XMLHttpRequest();
+            }
+            function getdetails() {
+                var ciudadid = document.getElementById("ciudadid");
+                var url = "http://localhost:8080/WeatherApp/webresources/ciudad/" + ciudadid.value;
+                xmlhttp.open('GET', url, false);
+                xmlhttp.send(null);
+                xmlhttp.onreadystatechange = function () {
+                    var snombre = document.getElementById("snombre");
+                    var stemperatura = document.getElementById("stemperatura");
+                    var sclima = document.getElementById("sclima");
+        //El objeto XMLHttpRequest soporte 4 estados
+        //0: Request no se ha inicializado
+        //1: La conexión con el server se ha establecido
+        //2: el request se ha recibido
+        //3; se está procesando el request
+        //4: el request se ha finalizado y el response está listo
+                    if (xmlhttp.readyState == 4) {
+                        if (xmlhttp.status == 200) {
+                            var det = eval("(" + xmlhttp.responseText + ")");
+                            snombre.value = det.nombre;
+                            stemperatura.value = det.temperatura;
+                            sclima.value = det.clima;
+                        } else{
+                            alert("Datos no encontrados");
+                        }
+                    } else{
+                        alert("Datos en JSON!!!! ->" + xmlhttp.responseText);
+                    }
+                };
+            }
+        </script>
+    </head>
+    <body onload="init()">
+        <h1>Llamado a REST Web service</h1>
+        <table>
+            <tr>
+                <td>Ingrese el ID de la Ciudad</td>
+                <td><input type="text" id="ciudadid" size="10"/>
+                    <input type="button" value="Cargar Ciudad" onclick="getdetails()"/>
+                </td>
+            </tr>
+            <br>
+            <tr>
+                <td>Nombre</td>
+                <td><input type="text" id="snombre" size="20" readonly/>
+                </td>
+            </tr>
+            <tr>
+                <td>Temperatura</td>
+                <td><input type="number" id="stemperatura" size="20" readonly/>
+                </td>
+            </tr>
+            <tr>
+                <td>Clima</td>
+                <td><input type="text" id="sclima" size="20" readonly/>
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>
+
